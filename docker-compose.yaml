@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    volumes:
+      - .:/app
+      - ./code:/app/code
+    environment:
+      - PYTHONPATH=/app
+    command: pytest
