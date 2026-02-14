@@ -8,4 +8,4 @@ services:
       - ./code:/app/code
     environment:
       - PYTHONPATH=/app
-    command: pytest
+    command: pytest tests/ -s
