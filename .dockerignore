@@ -1,0 +1,25 @@
+# Python bytecode
+**/__pycache__/
+*.py[cod]
+*$py.class
+
+# Testing and Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local Environment / IDEs
+.venv/
+venv/
+env/
+.env
+.vscode/
+.idea/
+
+# Version Control
+.git
+.gitignore
+
+# Docker logs
+docker-compose.override.yml
+*.log

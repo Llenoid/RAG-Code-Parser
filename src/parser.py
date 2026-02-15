@@ -10,7 +10,7 @@ class CParser:
         self.is_multiline_comment = False
 
     def parse_string(self, chunk: str) -> list[str]:
-        print(f"\n{'Char':<5} | {'Depth':<5} | {'String':<7} | {'Comment':<7} | {'Multi':<7}")
+        # print(f"\n{'Char':<5} | {'Depth':<5} | {'String':<7} | {'Comment':<7} | {'Multi':<7}")
         print("-" * 50)
 
         self.chunks = []
@@ -59,7 +59,7 @@ class CParser:
                         self.current_chunk = []
                         self.in_function = False
             i += 1
-            debug_char = repr(char)
-            print(f"{debug_char:<5} | {self.brace_depth:<5} | {str(self.in_string):<7} | {str(self.in_comment):<7}")
+            # debug_char = repr(char)
+            # print(f"{debug_char:<5} | {self.brace_depth:<5} | {str(self.in_string):<7} | {str(self.in_comment):<7}")
 
         return self.chunks
