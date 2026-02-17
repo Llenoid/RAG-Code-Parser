@@ -6,6 +6,14 @@ services:
     volumes:
       - .:/app
       - ./code:/app/code
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    env_file:
+      - .env
     environment:
       - PYTHONPATH=/app
-    command: pytest tests/ -s
+      - API_KEY=${API_KEY}
+      - BASE_URL=${BASE_URL}
+    stdin_open: true
+    tty: true
+    command: python -m src.main

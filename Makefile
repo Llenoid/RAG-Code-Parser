@@ -1,5 +1,5 @@
 up:
-	docker compose up --build -d
+	docker compose up --build
 
 down:
 	docker compose down
@@ -11,6 +11,4 @@ ps:
 	docker compose ps -a
 
 run:
-	make down
-	make up
-	make log
+	docker compose run -it --rm app
