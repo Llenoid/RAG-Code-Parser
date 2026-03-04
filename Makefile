@@ -7,6 +7,9 @@ down:
 enter:
 	docker compose exec -it app bash
 
+test:
+	docker compose -f docker-compose.test.yaml run --rm app
+
 log:
 	docker compose logs -f app
 
