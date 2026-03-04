@@ -11,7 +11,7 @@ class CParser:
 
     def parse_string(self, chunk: str) -> list[str]:
         # print(f"\n{'Char':<5} | {'Depth':<5} | {'String':<7} | {'Comment':<7} | {'Multi':<7}")
-        print("-" * 50)
+        # print("-" * 50)
 
         self.chunks = []
         self.current_chunk = []
@@ -30,8 +30,15 @@ class CParser:
                 self.current_chunk.append(char)
 
             if self.in_string:
-                if char == '"' and chunk[i-1] != "\\":
-                    self.in_string = False
+                if char == '"': 
+                    num_backslashes = 0
+                    j = i - 1
+                    while j >=0 and chunk[j] == '\\':
+                        num_backslashes += 1
+                        j -= 1
+
+                    if num_backslashes % 2 == 0:
+                        self.in_string = False
             elif self.in_comment:
                 if self.is_multiline_comment:
                     if char == "*" and next_char == "/":

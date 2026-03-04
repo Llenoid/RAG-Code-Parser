@@ -52,3 +52,23 @@ def test_multiline_comment(parser):
     """
     result =  parser.parse_string(chunk=code)
     assert len(result) == 1
+
+# Tests that parser correctly stays in_string for genuinely escaped quote
+# String never closes, no functions found
+def test_string_with_escaped_quote(parser):
+    code = """
+    void start() {
+        void log() { printf("test has backslashes in string\\"); }
+    }
+    """
+    result = parser.parse_string(chunk=code)
+    assert len(result) == 0
+
+def test_string_with_escaped_backslashes(parser):
+    code = """
+    void start() {
+        void log() { printf("test has backslashes in string\\\\"); }
+    }
+    """
+    result = parser.parse_string(chunk=code)
+    assert len(result) == 1

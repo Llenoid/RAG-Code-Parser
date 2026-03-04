@@ -4,6 +4,9 @@ up:
 down:
 	docker compose down
 
+enter:
+	docker compose exec -it app bash
+
 log:
 	docker compose logs -f app
 

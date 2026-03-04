@@ -15,6 +15,7 @@ load_dotenv()
 API_KEY: str | None = os.environ.get('API_KEY')
 BASE_URL: str | None = os.environ.get('BASE_URL')
 MODEL_ID: str | None = os.environ.get('MODEL_ID')
+EM_MODEL_ID: str = os.environ.get('EMMODEL_ID', 'text-embedding-3-small')
 
 def load_files_from_directory(directory_path, extension="*"):
     source_dir = Path(directory_path)
@@ -29,8 +30,6 @@ def load_files_from_directory(directory_path, extension="*"):
     return loaded_data
 
 async def main():
-    EM_MODEL_ID: str = os.environ.get('EMMODEL_ID', 'text-embedding-3-small')
-
     files = load_files_from_directory('/app/code')
     # print(f"Loaded {len(files)} files.")
 
@@ -46,10 +45,8 @@ async def main():
         print("Warning: No chunks found by the parser.")
         return
 
-    # Use pd.DataFrame(all_data) directly to keep file_name!
-    df = pd.DataFrame(all_data)
-    massager = DataMassager([]) # Dummy chunks, we'll set df manually
-    massager.df = df
+    massager = DataMassager(all_data)
+    massager.to_dataframe()
     massager.clean()
     massager.add_metadata()
     df = cast(pd.DataFrame, massager.df)
@@ -97,13 +94,20 @@ async def main():
 
             row = df_clean.iloc[idx]
 
-            answer = await ask_llm(client, row["text"], query)
+            answer = await ask_llm(
+                client=client,
+                context=row["text"],
+                query=query,
+                base_url=BASE_URL,
+                api_key=API_KEY,
+                model_id=MODEL_ID
+            )
 
             print(f"\n[{row['file_name']}]")
             print(f"--------------------")
             print(answer)
 
-async def ask_llm(client: httpx.AsyncClient, context: str, query: str) -> str:
+async def ask_llm(client: httpx.AsyncClient, context: str, query: str, base_url, api_key, model_id) -> str:
     system_prompt = (
         "You are a C Code Expert. "
         "Your task is to explain the provided code context. "
@@ -117,10 +121,10 @@ async def ask_llm(client: httpx.AsyncClient, context: str, query: str) -> str:
     user_content = f"Context from Codebase: {context}\n\nQuestion: {query}"
 
     response = await client.post(
-        f"{BASE_URL}/chat/completions",
-        headers={"Authorization": f"Bearer {API_KEY}"},
+        f"{base_url}/chat/completions",
+        headers={"Authorization": f"Bearer {api_key}"},
         json={
-            "model": MODEL_ID,
+            "model": model_id,
             "messages": [
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_content}
